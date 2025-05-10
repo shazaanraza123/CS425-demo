@@ -8,6 +8,7 @@ import AddExpense from './pages/AddExpense';
 import Budgets from './pages/Budgets';
 import Reports from './pages/Reports';
 import Income from './pages/Income';
+import AddIncome from './pages/AddIncome';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/expenses/new" element={<AddExpense />} />
             <Route path="/budgets" element={<Budgets />} />
             <Route path="/income" element={<Income />} />
+            <Route path="/income/new" element={<AddIncome />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />
           </Routes>

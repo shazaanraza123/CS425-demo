@@ -38,11 +38,17 @@ const Dashboard: React.FC = () => {
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             <p className="mt-1 text-gray-600">Welcome back, {user?.name}</p>
           </div>
-          <div className="mt-4 sm:mt-0">
+          <div className="mt-4 sm:mt-0 flex gap-2">
             <Link to="/expenses/new">
               <Button>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Add Expense
+              </Button>
+            </Link>
+            <Link to="/income">
+              <Button variant="outline">
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Add Income
               </Button>
             </Link>
           </div>
