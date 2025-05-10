@@ -1,6 +1,6 @@
 # cs425demo
 
-A full-stack personal finance tracker using React (frontend), Express (backend), and MySQL (database).
+finance tracker using React (frontend), Express (backend), and MySQL (database).
 
 ## Features
 - User registration and login
