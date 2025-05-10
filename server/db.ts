@@ -25,11 +25,12 @@ export const dbPool: Pool = mysql.createPool({
 });
 
 // Test the database connection
-const testConnection = async () => {
+export const testConnection = async () => {
   let connection;
   try {
     connection = await dbPool.getConnection();
     console.log('Database connected successfully');
+    return true;
   } catch (err) {
     console.error('Error connecting to the database:', {
       message: err instanceof Error ? err.message : 'Unknown error',
@@ -39,15 +40,12 @@ const testConnection = async () => {
       sqlMessage: err instanceof Error ? (err as any).sqlMessage : 'UNKNOWN',
       stack: err instanceof Error ? err.stack : 'No stack trace'
     });
-    throw err; // Re-throw the error to be caught by the server
+    throw err;
   } finally {
     if (connection) {
       connection.release();
     }
   }
 };
-
-// Wait for the connection test to complete before exporting
-await testConnection();
 
 export const JWT_SECRET = process.env.JWT_SECRET || 'mysecretkey123'; 

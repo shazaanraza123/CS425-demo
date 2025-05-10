@@ -1,8 +1,7 @@
--- (Optional) Create the database and use it
 CREATE DATABASE IF NOT EXISTS cs425;
 USE cs425;
 
--- 1. Create user table
+
 CREATE TABLE IF NOT EXISTS `user` (
     `id` bigint not null auto_increment primary key,
     `uuid` varchar(36) not null unique key,
@@ -13,7 +12,6 @@ CREATE TABLE IF NOT EXISTS `user` (
     `date_updated` datetime default null on update current_timestamp
 );
 
--- 2. Create category table
 CREATE TABLE IF NOT EXISTS `category` (
     `id` bigint not null auto_increment primary key,
     `uuid` varchar(36) not null unique key,
@@ -23,7 +21,6 @@ CREATE TABLE IF NOT EXISTS `category` (
     `date_updated` datetime default null on update current_timestamp
 );
 
--- 3. Create budget table
 CREATE TABLE IF NOT EXISTS `budget` (
     `id` bigint not null auto_increment primary key,
     `uuid` varchar(36) not null unique key,
@@ -39,7 +36,6 @@ CREATE TABLE IF NOT EXISTS `budget` (
     foreign key (`category_id`) references `category` (`id`)
 );
 
--- 4. Create expense table
 CREATE TABLE IF NOT EXISTS `expense` (
     `id` bigint not null auto_increment primary key,
     `uuid` varchar(36) not null unique key,
@@ -54,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `expense` (
     foreign key (`category_id`) references `category` (`id`)
 );
 
--- 5. Create income_source table
 CREATE TABLE IF NOT EXISTS `income_source` (
     `id` bigint not null auto_increment primary key,
     `uuid` varchar(36) not null unique key,
@@ -68,7 +63,6 @@ CREATE TABLE IF NOT EXISTS `income_source` (
     foreign key (`user_id`) references `user` (`id`)
 );
 
--- 6. Create report table
 CREATE TABLE IF NOT EXISTS `report` (
     `id` bigint not null auto_increment primary key,
     `uuid` varchar(36) not null unique key,

@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
-import { dbPool, JWT_SECRET } from './db.js';
+import { dbPool, JWT_SECRET, testConnection } from './db.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -69,9 +70,54 @@ app.get('/api/budgets/:userId', (async (req: Request, res: Response, next: NextF
   }
 }) as RequestHandler);
 
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const [rows] = await dbPool.query('SELECT * FROM user WHERE email = ?', [email]);
+    const user = (rows as any[])[0];
+    if (user && user.password === password) {
+      res.json({ id: user.id, name: user.name, email: user.email });
+    } else {
+      res.status(401).json({ error: 'Invalid credentials' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Register endpoint
+app.post('/api/register', (async (req: Request, res: Response, next: NextFunction) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  try {
+    const [rows] = await dbPool.query('SELECT * FROM user WHERE email = ?', [email]);
+    if ((rows as any[]).length > 0) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+
+    const uuid = uuidv4();
+    const [result] = await dbPool.query(
+      'INSERT INTO user (uuid, name, email, password) VALUES (?, ?, ?, ?)',
+      [uuid, name, email, password]
+    );
+
+    const [userRows] = await dbPool.query('SELECT * FROM user WHERE email = ?', [email]);
+    const user = (userRows as any[])[0];
+    res.status(201).json({ id: user.id, name: user.name, email: user.email });
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler);
+
 // Start the server
 const startServer = async () => {
   try {
+    // Test database connection first
+    await testConnection();
+    
     const server = app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });

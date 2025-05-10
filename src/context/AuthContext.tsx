@@ -81,34 +81,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     dispatch({ type: 'LOGIN_START' });
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // For demo purposes - in a real app this would call an API
-      if (email === 'demo@example.com' && password === 'password') {
-        const user = { id: '1', name: 'Demo User', email };
-        localStorage.setItem('user', JSON.stringify(user));
-        dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-      } else {
-        dispatch({ type: 'LOGIN_FAILURE', payload: 'Invalid credentials' });
+      const res = await fetch('http://localhost:5001/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Invalid credentials');
       }
-    } catch (error) {
-      dispatch({ type: 'LOGIN_FAILURE', payload: 'Login failed' });
+      const user = await res.json();
+      localStorage.setItem('user', JSON.stringify(user));
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+    } catch (error: any) {
+      dispatch({ type: 'LOGIN_FAILURE', payload: error.message || 'Login failed' });
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
     dispatch({ type: 'REGISTER_START' });
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // For demo purposes - in a real app this would call an API
-      const user = { id: Date.now().toString(), name, email };
+      const res = await fetch('http://localhost:5001/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Registration failed');
+      }
+      const user = await res.json();
       localStorage.setItem('user', JSON.stringify(user));
       dispatch({ type: 'REGISTER_SUCCESS', payload: user });
-    } catch (error) {
-      dispatch({ type: 'REGISTER_FAILURE', payload: 'Registration failed' });
+    } catch (error: any) {
+      dispatch({ type: 'REGISTER_FAILURE', payload: error.message || 'Registration failed' });
     }
   };
 
