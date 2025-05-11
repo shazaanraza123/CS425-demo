@@ -23,3 +23,10 @@ INSERT INTO income_source (uuid, name, amount, frequency, description, user_id) 
   
 INSERT INTO report (uuid, generated_at, type, data, user_id) VALUES
   (UUID(), NOW(), 'Monthly Summary', '{"total":3500}', 1); 
+
+
+
+
+
+
+  
